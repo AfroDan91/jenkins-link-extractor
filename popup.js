@@ -4,7 +4,6 @@ const fileSpan = document.getElementById("file");
 const resultsDiv = document.getElementById("results");
 const extractBtn = document.getElementById("extractBtn");
 
-// Load previous state on popup open
 document.addEventListener("DOMContentLoaded", async () => {
   const data = await chrome.storage.local.get(["lastUrl", "folder", "file"]);
   if (data.lastUrl) {
@@ -19,16 +18,32 @@ extractBtn.addEventListener("click", async () => {
   const url = urlInput.value.trim();
   if (!url) return;
 
-  const parts = url.split("/").filter(Boolean);
-  const folder = parts.find(p => p.includes("environment")) || "N/A";
-  const file = parts.find(p => p.endsWith(".yml")) || "N/A";
+  try {
+    const parsed = new URL(url);
+    const pathParts = parsed.pathname.split("/").filter(Boolean);
 
-  folderSpan.textContent = folder;
-  fileSpan.textContent = file;
-  resultsDiv.style.display = "block";
+    // Find environment-definitions index
+    const envIndex = pathParts.findIndex(p =>
+      p.toLowerCase().includes("environment-definition")
+    );
 
-  // Save to storage
-  await chrome.storage.local.set({ lastUrl: url, folder, file });
+    let folder = "N/A";
+    if (envIndex > 0) {
+      // Include the section before + environments + environment-definitions
+      folder = pathParts.slice(envIndex - 2, envIndex + 1).join("/");
+    }
+
+    // Find the .yml file
+    const filePart = pathParts.find(p => p.endsWith(".yml")) || "N/A";
+
+    folderSpan.textContent = folder;
+    fileSpan.textContent = filePart;
+    resultsDiv.style.display = "block";
+
+    await chrome.storage.local.set({ lastUrl: url, folder, file: filePart });
+  } catch (e) {
+    alert("Invalid URL format. Please paste a full link (starting with http/https).");
+  }
 });
 
 document.querySelectorAll(".copyBtn").forEach(btn => {
