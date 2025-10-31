@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Jenkins Link Helper",
+  "version": "1.0",
+  "description": "Extracts Jenkins parameters from environment definition URLs.",
+  "permissions": ["clipboardWrite", "activeTab", "scripting", "storage"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Jenkins Link Helper"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}

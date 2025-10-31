@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h2>Jenkins Link Helper</h2>
+  <textarea id="urlInput" placeholder="Paste your link here..."></textarea>
+  <button id="extractBtn">Extract</button>
+
+  <div id="results" style="display:none;">
+    <p><strong>Folder:</strong> <span id="folder"></span>
+      <button class="copyBtn" data-target="folder">Copy</button>
+    </p>
+    <p><strong>File:</strong> <span id="file"></span>
+      <button class="copyBtn" data-target="file">Copy</button>
+    </p>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
